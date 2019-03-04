@@ -14,7 +14,7 @@ public class FileParser {
         }
     }
 
-    public TuringMachine initialiseTuringMachine() {
+    public void initialiseTuringMachine() {
         if (this.reader == null) {
             return null;
         } else {
