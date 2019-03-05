@@ -22,13 +22,19 @@ public class FileParser {
         }
     }
 
-    private Tape initialiseTape() throws IOException {
+    public Tape initialiseTape() throws IOException {
 
         if (this.reader == null) {
             return new Tape(null);
         } else {
-            String line = reader.readLine();
-            return new Tape(line);
+            String tapeWord = "";
+            StringBuilder sb = new StringBuilder(tapeWord);
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            return new Tape(sb.toString());
         }
     }
 
@@ -62,6 +68,8 @@ public class FileParser {
             if (tokens.length < 3) showInputError();
 
             int alphabetSize = Integer.parseInt(tokens[1]);
+
+            if (alphabetSize < 1 || tokens.length < alphabetSize) showInputError();
 
             for (int i = 0; i < alphabetSize; i++) {
 
@@ -123,7 +131,7 @@ public class FileParser {
         return stateTable;
     }
 
-    private TuringMachine initialiseTuringMachine(Tape tape) throws IOException {
+    public TuringMachine initialiseTuringMachine(Tape tape) throws IOException {
 
         TuringMachine tm = new TuringMachine();
         tm.setTape(tape);
@@ -155,9 +163,14 @@ public class FileParser {
 
             do {
                 line = reader.readLine();
+
                 if (line == null && !firstTime) {
                     transitionTable.put(stateTable.get(prevReadState), innerHashMap);
                     break;
+                }
+
+                if (line.equals("")) {
+                    continue;
                 }
 
                 String[] tokens = line.split("\\s+");
@@ -193,15 +206,5 @@ public class FileParser {
 
         System.out.println("input error");
         System.exit(2);
-    }
-
-    public static void main(String[] args) throws IOException {
-
-        FileParser fp = new FileParser("test2.tm", false);
-        FileParser tapeParser = new FileParser("test.tape", true);
-        Tape tape = tapeParser.initialiseTape();
-        TuringMachine tm = fp.initialiseTuringMachine(tape);
-
-        tm.run();
     }
 }

@@ -7,6 +7,7 @@ public class Tape {
     private int currentPos;
 
     public Tape(String initial) {
+        initial = initial.replace("\n", "");
 
         if (initial == null) {
             tape = new ArrayList<>();
@@ -55,6 +56,16 @@ public class Tape {
     public void setTape(ArrayList<Character> tape) {
 
         this.tape = tape;
+    }
+
+    public void printState() {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < this.tape.size(); i++) {
+            sb.append(this.tape.get(i));
+        }
+
+        System.out.println(sb.toString());
     }
 
     public Character getCurrent() {

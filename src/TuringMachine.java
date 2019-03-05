@@ -23,11 +23,13 @@ public class TuringMachine {
 
             if (this.currentState.isAccept()) {
                 System.out.println("accepted");
-                System.out.println(this.transitions);
+                System.out.println(this.transitions - 1);
+                this.tape.printState();
                 System.exit(0);
             } else if (this.currentState.isReject()) {
                 System.out.println("not accepted");
-                System.out.println(this.transitions);
+                System.out.println(this.transitions - 1);
+                this.tape.printState();
                 System.exit(1);
             }
 
