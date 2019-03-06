@@ -3,10 +3,11 @@ import java.io.IOException;
 public class runtm {
 
     public static void main(String[] args) throws IOException {
-        FileParser fp = new FileParser("manystates.tm", false);
-        FileParser tapeParser = new FileParser("test.tape", true);
+        FileParser turingDescParser = new FileParser(args[0], false);
+        FileParser tapeParser = new FileParser(args[1], true);
+
         Tape tape = tapeParser.initialiseTape();
-        TuringMachine tm = fp.initialiseTuringMachine(tape);
+        TuringMachine tm = turingDescParser.initialiseTuringMachine(tape);
 
         tm.run();
     }

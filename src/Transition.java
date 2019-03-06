@@ -1,3 +1,9 @@
+/**
+ * Class to represent a transition from one state to another, and hold the input/output characters to read/write from
+ * the tape, as well as the move direction.
+ *
+ * @author 160009591
+ */
 public class Transition {
 
     private State currentState;
@@ -19,8 +25,14 @@ public class Transition {
     @Override
     public String toString() {
 
-        return this.currentState.getName() + " " + this.tapeInput + " " + this.outputState.getName() + " " + this.tapeOutput + " " + this.move;
+        return this.currentState.getName() + " "
+                + this.tapeInput + " " + this.outputState.getName() + " "
+                + this.tapeOutput + " " + this.move;
     }
+
+    /*
+     * Getters and setters
+     */
 
     public State getCurrentState() {
 

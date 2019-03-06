@@ -1,6 +1,13 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+/**
+ * Class representing the Turing Machine itself. Once supplied with the necessary parameters, the run() method can be
+ * invoked to process a tape based on a description and "accept" or "reject".
+ *
+ * @author 160009591
+ */
 public class TuringMachine {
 
     private int transitions;
@@ -17,60 +24,88 @@ public class TuringMachine {
 
     }
 
+    /**
+     * Run method of the turing machine.
+     *
+     * Repeatedly:
+     *  - Get an input character from the tape
+     *  - Locate the transition associated with the current state and the input character
+     *  - Perform the transition
+     *  - Invoke tape methods to move L or R according to transition table
+     *  - Accept or reject when one of these states reached (or reject when we have the special "virtual transition")
+     */
     public void run() {
 
         do {
-
-            if (this.currentState.isAccept()) {
-                System.out.println("accepted");
-                System.out.println(this.transitions - 1);
-                this.tape.printState();
-                System.exit(0);
-            } else if (this.currentState.isReject()) {
-                System.out.println("not accepted");
-                System.out.println(this.transitions - 1);
-                this.tape.printState();
-                System.exit(1);
-            }
-
+            checkCurrentState();
             Character input = this.tape.getCurrent();
 
             if (!this.alphabet.contains(input) && input != '_') {
                 System.out.println("error in tape file");
                 System.exit(3);
             }
+
             Transition transition = this.transitionTable.get(this.currentState).get(input);
 
             if (transition == null) {
-
-                if (!this.alphabet.contains(input) && input != '_') {
-                    System.out.println("error in tape file");
-                    System.exit(3);
-                } else {
-                    this.currentState = this.rejectState;
-                    this.tape.moveL(this.tape.getCurrent());
-                }
-
+                handleTransitionNotFound(input);
             } else {
-                this.currentState = transition.getOutputState();
-              /*  System.out.println("should write " + transition.getTapeOutput());
-                System.out.println("should go to state " + transition.getOutputState().getName() + " rejecting? " + transition.getOutputState().isReject());
-                System.out.println("should move " + transition.getMove());*/
-
-                switch (transition.getMove()) {
-                    case 'L':
-                        this.tape.moveL(transition.getTapeOutput());
-                        this.transitions++;
-                        break;
-
-                    case 'R':
-                        this.tape.moveR(transition.getTapeOutput());
-                        this.transitions++;
-                        break;
-                }
+                performStateTransition(transition);
             }
+
         } while (true);
     }
+
+    private void checkCurrentState() {
+
+        if (this.currentState.isAccept()) {
+
+            System.out.println("accepted");
+            System.out.println(this.transitions - 1);
+            this.tape.printState();
+            System.exit(0);
+        } else if (this.currentState.isReject()) {
+
+            System.out.println("not accepted");
+            System.out.println(this.transitions - 1);
+            this.tape.printState();
+            System.exit(1);
+        }
+    }
+
+    private void handleTransitionNotFound(Character input) {
+
+        if (!this.alphabet.contains(input) && input != '_') {
+            System.out.println("error in tape file");
+            System.exit(3);
+        } else {
+
+            // Perform "virtual" transition, since no transition exists for given input and current state
+            this.currentState = this.rejectState;
+            this.tape.moveL(this.tape.getCurrent());
+        }
+    }
+
+    private void performStateTransition(Transition transition) {
+
+        this.currentState = transition.getOutputState();
+
+        switch (transition.getMove()) {
+            case 'L':
+                this.tape.moveL(transition.getTapeOutput());
+                this.transitions++;
+                break;
+
+            case 'R':
+                this.tape.moveR(transition.getTapeOutput());
+                this.transitions++;
+                break;
+        }
+    }
+
+    /*
+     * Getters and setters
+     */
 
     public int getTransitions() {
 

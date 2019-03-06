@@ -1,5 +1,11 @@
 import java.util.ArrayList;
 
+/**
+ * Class representing the tape (as an ArrayList of Characters). Supplies methods to move left or right and write to
+ * the tape.
+ *
+ * @author 160009591
+ */
 public class Tape {
 
     private ArrayList<Character> tape;
@@ -7,13 +13,13 @@ public class Tape {
     private int currentPos;
 
     public Tape(String initial) {
-        initial = initial.replace("\n", "");
 
         if (initial == null) {
             tape = new ArrayList<>();
             tape.add('_');
             current = ('_');
         } else {
+            initial = initial.replace("\n", "");
             tape = new ArrayList<>();
             for (int i = 0; i < initial.length(); i++) {
                 tape.add(initial.charAt(i));
@@ -24,6 +30,12 @@ public class Tape {
         currentPos = 0;
     }
 
+
+    /**
+     * Move left on the tape (stay in current position if we're at the left end).
+     *
+     * @param write - the output to write to the current tape position
+     */
     public void moveL(Character write) {
 
         if (this.currentPos != 0) {
@@ -35,6 +47,11 @@ public class Tape {
         }
     }
 
+    /**
+     * Move right on the tape (add a blank if we've reached the "end").
+     *
+     * @param write - the output to write to the current tape position
+     */
     public void moveR(Character write) {
 
         this.tape.set(currentPos, write);
@@ -48,6 +65,32 @@ public class Tape {
         }
     }
 
+
+    /**
+     * Print the final resulting tape after the TM has halted.
+     */
+    public void printState() {
+        StringBuilder sb = new StringBuilder();
+
+        // Assemble string by iterating across the tape
+        for (Character tapeCharacter : this.tape) {
+            sb.append(tapeCharacter);
+        }
+
+
+        // Strip trailing blanks
+        String tapeOutput = sb.toString().replaceAll("_+$", "");
+
+        // If the tape is now empty, print a single blank by convention
+        if (tapeOutput.isEmpty()) tapeOutput = "_";
+
+        System.out.println(tapeOutput);
+    }
+
+    /*
+     * Getters and setters
+     */
+
     public ArrayList<Character> getTape() {
 
         return tape;
@@ -56,16 +99,6 @@ public class Tape {
     public void setTape(ArrayList<Character> tape) {
 
         this.tape = tape;
-    }
-
-    public void printState() {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < this.tape.size(); i++) {
-            sb.append(this.tape.get(i));
-        }
-
-        System.out.println(sb.toString());
     }
 
     public Character getCurrent() {
