@@ -26,13 +26,13 @@ public class TuringMachine {
 
     /**
      * Run method of the turing machine.
-     *
+     * <p>
      * Repeatedly:
-     *  - Get an input character from the tape
-     *  - Locate the transition associated with the current state and the input character
-     *  - Perform the transition
-     *  - Invoke tape methods to move L or R according to transition table
-     *  - Accept or reject when one of these states reached (or reject when we have the special "virtual transition")
+     * - Get an input character from the tape
+     * - Locate the transition associated with the current state and the input character
+     * - Perform the transition
+     * - Invoke tape methods to move L or R according to transition table
+     * - Accept or reject when one of these states reached (or reject when we have the special "virtual transition")
      */
     public void run() {
 
@@ -45,6 +45,13 @@ public class TuringMachine {
                 System.exit(3);
             }
 
+            handleTransition(input);
+        } while (true);
+    }
+
+    private void handleTransition(Character input) {
+
+        try {
             Transition transition = this.transitionTable.get(this.currentState).get(input);
 
             if (transition == null) {
@@ -52,8 +59,12 @@ public class TuringMachine {
             } else {
                 performStateTransition(transition);
             }
-
-        } while (true);
+        } catch (NullPointerException ex) {
+            System.out.println("not accepted");
+            System.out.println(this.transitions + " ");
+            this.tape.printState();
+            System.exit(1);
+        }
     }
 
     private void checkCurrentState() {
@@ -61,13 +72,14 @@ public class TuringMachine {
         if (this.currentState.isAccept()) {
 
             System.out.println("accepted");
-            System.out.println(this.transitions - 1);
+            System.out.println(this.transitions - 1 + " ");
             this.tape.printState();
             System.exit(0);
+
         } else if (this.currentState.isReject()) {
 
             System.out.println("not accepted");
-            System.out.println(this.transitions - 1);
+            System.out.println(this.transitions - 1 + " ");
             this.tape.printState();
             System.exit(1);
         }

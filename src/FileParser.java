@@ -12,7 +12,7 @@ public class FileParser {
     public FileParser(String filename, boolean readingTape) {
 
         try {
-            this.reader = new BufferedReader(new FileReader("../tmfiles/" + filename));
+            this.reader = new BufferedReader(new FileReader("tmfiles/" + filename));
         } catch (FileNotFoundException ex) {
             if (readingTape) {
                 this.reader = null;
@@ -166,6 +166,8 @@ public class FileParser {
 
                 if (line == null && !firstTime) {
                     transitionTable.put(stateTable.get(prevReadState), innerHashMap);
+                    break;
+                } else if (line == null && firstTime) {
                     break;
                 }
 
