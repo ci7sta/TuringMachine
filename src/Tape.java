@@ -14,7 +14,7 @@ public class Tape {
 
     public Tape(String initial) {
 
-        if (initial == null) {
+        if (initial == null || initial.equals("")) {
             tape = new ArrayList<>();
             tape.add('_');
             current = ('_');

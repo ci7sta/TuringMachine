@@ -24,6 +24,7 @@ default: classes
 
 
 classes: $(CLASSES:.java=.class)
+	cp ../runtm ./
 
 
 run: $(MAIN).class

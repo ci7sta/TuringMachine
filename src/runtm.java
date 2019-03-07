@@ -8,10 +8,10 @@ public class runtm {
 
         FileParser tapeParser;
 
-        if(args.length == 2 && args[1] != null) {
+        if (args.length == 2 && args[1] != null) {
             tapeParser = new FileParser(args[1], true);
         } else {
-            tapeParser = new FileParser(null, true);
+            tapeParser = new FileParser("", true);
         }
 
         Tape tape = tapeParser.initialiseTape();

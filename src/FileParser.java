@@ -13,7 +13,10 @@ public class FileParser {
 
         try {
             this.reader = new BufferedReader(new FileReader("tmfiles/" + filename));
+            //this.reader = new BufferedReader(new FileReader(filename));
+
         } catch (FileNotFoundException ex) {
+            //System.out.println(filename);
             if (readingTape) {
                 this.reader = null;
             } else {
@@ -34,7 +37,7 @@ public class FileParser {
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
-            return new Tape(sb.toString());
+            return new Tape(sb.toString().replace(" ", ""));
         }
     }
 
@@ -45,7 +48,7 @@ public class FileParser {
 
         try {
             numberOfStates = Integer.parseInt(tokens[1]);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException | IndexOutOfBoundsException ex) {
             showInputError();
         }
 
@@ -69,7 +72,8 @@ public class FileParser {
 
             int alphabetSize = Integer.parseInt(tokens[1]);
 
-            if (alphabetSize < 1 || tokens.length < alphabetSize) showInputError();
+
+            if (alphabetSize < 1 || tokens.length - 2 < alphabetSize) showInputError();
 
             for (int i = 0; i < alphabetSize; i++) {
 
@@ -147,7 +151,7 @@ public class FileParser {
 
             line = reader.readLine();
 
-            if (!line.contains("states")) {
+            if (line == null || !line.contains("states")) {
                 showInputError();
             } else {
                 numberOfStates = getNumberOfStates(line);
@@ -182,17 +186,37 @@ public class FileParser {
                 inputState = stateTable.get(tokens[0]);
                 outputState = stateTable.get(tokens[2]);
 
+                if (inputState == null || outputState == null) showInputError();
+
+
                 Transition transition = new Transition(inputState, tokens[1].charAt(0),
                         outputState, tokens[3].charAt(0),
                         tokens[4].charAt(0));
+
+                if (transition.getMove() != 'L' && transition.getMove() != 'R') showInputError();
+                if (!tm.getStateTable().containsKey(transition.getCurrentState().getName())) showInputError();
+                if (!tm.getStateTable().containsKey(transition.getOutputState().getName())) showInputError();
+
+                if (transition.getTapeInput() != '_' && !tm.getAlphabet().contains(transition.getTapeInput())) {
+                    showInputError();
+                }
+
+                if (transition.getTapeOutput() != '_' && !tm.getAlphabet().contains(transition.getTapeOutput())) {
+                    showInputError();
+                }
+
 
                 if (!tokens[0].equals(prevReadState) && !firstTime) {
                     transitionTable.put(stateTable.get(prevReadState), innerHashMap);
                     innerHashMap = new HashMap<>();
                     innerHashMap.put(transition.getTapeInput(), transition);
+
+                } else if (innerHashMap.containsKey(transition.getTapeInput())) {
+                    showInputError();
                 } else {
                     innerHashMap.put(transition.getTapeInput(), transition);
                 }
+
                 prevReadState = inputState.getName();
                 firstTime = false;
             } while (true);

@@ -37,7 +37,6 @@ public class TuringMachine {
     public void run() {
 
         do {
-            checkCurrentState();
             Character input = this.tape.getCurrent();
 
             if (!this.alphabet.contains(input) && input != '_') {
@@ -45,26 +44,34 @@ public class TuringMachine {
                 System.exit(3);
             }
 
-            handleTransition(input);
+            if (!handleTransition(input)) transitions++;
+            checkCurrentState();
         } while (true);
     }
 
-    private void handleTransition(Character input) {
+    private boolean handleTransition(Character input) {
 
         try {
             Transition transition = this.transitionTable.get(this.currentState).get(input);
 
             if (transition == null) {
                 handleTransitionNotFound(input);
+                checkCurrentState();
+                return true;
             } else {
                 performStateTransition(transition);
+                checkCurrentState();
+                return false;
             }
+
         } catch (NullPointerException ex) {
             System.out.println("not accepted");
             System.out.println(this.transitions + " ");
             this.tape.printState();
             System.exit(1);
         }
+
+        return false;
     }
 
     private void checkCurrentState() {
@@ -72,14 +79,14 @@ public class TuringMachine {
         if (this.currentState.isAccept()) {
 
             System.out.println("accepted");
-            System.out.println(this.transitions - 1 + " ");
+            System.out.println(this.transitions + " ");
             this.tape.printState();
             System.exit(0);
 
         } else if (this.currentState.isReject()) {
 
             System.out.println("not accepted");
-            System.out.println(this.transitions - 1 + " ");
+            System.out.println(this.transitions + " ");
             this.tape.printState();
             System.exit(1);
         }
@@ -88,8 +95,7 @@ public class TuringMachine {
     private void handleTransitionNotFound(Character input) {
 
         if (!this.alphabet.contains(input) && input != '_') {
-            System.out.println("error in tape file");
-            System.exit(3);
+            System.exit(2);
         } else {
 
             // Perform "virtual" transition, since no transition exists for given input and current state
@@ -105,12 +111,10 @@ public class TuringMachine {
         switch (transition.getMove()) {
             case 'L':
                 this.tape.moveL(transition.getTapeOutput());
-                this.transitions++;
                 break;
 
             case 'R':
                 this.tape.moveR(transition.getTapeOutput());
-                this.transitions++;
                 break;
         }
     }
