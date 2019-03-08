@@ -14,7 +14,7 @@ public class TuringMachine {
     private int numberOfStates;
     private State acceptState, rejectState;
     private HashMap<String, State> stateTable;
-    private HashMap<State, HashMap<Character, Transition>> transitionTable;
+    private HashMap<String, Transition> transitionTable;
     private ArrayList<Character> alphabet;
     private Tape tape;
     private State currentState;
@@ -36,6 +36,12 @@ public class TuringMachine {
      */
     public void run() {
 
+        if (!validateTape()) {
+            System.out.println("input error");
+            System.exit(2);
+        }
+
+
         do {
             Character input = this.tape.getCurrent();
 
@@ -49,10 +55,18 @@ public class TuringMachine {
         } while (true);
     }
 
+    private boolean validateTape() {
+        for (Character c : this.tape.getTape()) {
+            if (!this.alphabet.contains(c) && c != '_') return false;
+        }
+
+        return true;
+    }
+
     private boolean handleTransition(Character input) {
 
         try {
-            Transition transition = this.transitionTable.get(this.currentState).get(input);
+            Transition transition = this.transitionTable.get(this.currentState.getName() + input);
 
             if (transition == null) {
                 handleTransitionNotFound(input);
@@ -173,13 +187,11 @@ public class TuringMachine {
         this.stateTable = stateTable;
     }
 
-    public HashMap<State, HashMap<Character, Transition>> getTransitionTable() {
-
+    public HashMap<String, Transition> getTransitionTable() {
         return transitionTable;
     }
 
-    public void setTransitionTable(HashMap<State, HashMap<Character, Transition>> transitionTable) {
-
+    public void setTransitionTable(HashMap<String, Transition> transitionTable) {
         this.transitionTable = transitionTable;
     }
 

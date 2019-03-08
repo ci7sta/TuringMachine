@@ -141,8 +141,7 @@ public class FileParser {
         tm.setTape(tape);
 
         HashMap<String, State> stateTable;
-        HashMap<State, HashMap<Character, Transition>> transitionTable = new HashMap<>();
-        HashMap<Character, Transition> innerHashMap = new HashMap<>();
+        HashMap<String, Transition> transitionTable = new HashMap<>();
         boolean firstTime = true;
         int numberOfStates = 0;
 
@@ -168,16 +167,8 @@ public class FileParser {
             do {
                 line = reader.readLine();
 
-                if (line == null && !firstTime) {
-                    transitionTable.put(stateTable.get(prevReadState), innerHashMap);
-                    break;
-                } else if (line == null && firstTime) {
-                    break;
-                }
-
-                if (line.equals("")) {
-                    continue;
-                }
+                if (line == null) break;
+                else if (line.equals("")) continue;
 
                 String[] tokens = line.split("\\s+");
                 if (tokens.length != 5) showInputError();
@@ -188,12 +179,17 @@ public class FileParser {
 
                 if (inputState == null || outputState == null) showInputError();
 
+                if(tokens[2].charAt(0) == 'r') {
+                    System.out.println("HEY");
+                }
+
 
                 Transition transition = new Transition(inputState, tokens[1].charAt(0),
                         outputState, tokens[3].charAt(0),
                         tokens[4].charAt(0));
 
                 if (transition.getMove() != 'L' && transition.getMove() != 'R') showInputError();
+
                 if (!tm.getStateTable().containsKey(transition.getCurrentState().getName())) showInputError();
                 if (!tm.getStateTable().containsKey(transition.getOutputState().getName())) showInputError();
 
@@ -205,19 +201,16 @@ public class FileParser {
                     showInputError();
                 }
 
-
-                if (!tokens[0].equals(prevReadState) && !firstTime) {
-                    transitionTable.put(stateTable.get(prevReadState), innerHashMap);
-                    innerHashMap = new HashMap<>();
-                    innerHashMap.put(transition.getTapeInput(), transition);
-
-                } else if (innerHashMap.containsKey(transition.getTapeInput())) {
-                    showInputError();
-                } else {
-                    innerHashMap.put(transition.getTapeInput(), transition);
+                if (transition.getOutputState().equals(tm.getAcceptState())) {
+                    System.out.println("HEY!");
                 }
 
-                prevReadState = inputState.getName();
+                if (transitionTable.containsKey(transition.getCurrentState().getName() + transition.getTapeInput())) {
+                    showInputError();
+                } else {
+                    transitionTable.put(transition.getCurrentState().getName() + transition.getTapeInput(), transition);
+                }
+
                 firstTime = false;
             } while (true);
         }
