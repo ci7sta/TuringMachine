@@ -44,6 +44,7 @@ public class Tape {
             this.current = tape.get(currentPos);
         } else {
             this.tape.set(currentPos, write);
+            this.current = tape.get(currentPos);
         }
     }
 

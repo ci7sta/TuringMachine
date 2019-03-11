@@ -52,6 +52,7 @@ public class TuringMachine {
 
             if (!handleTransition(input)) transitions++;
             checkCurrentState();
+            //tape.printState();
         } while (true);
     }
 
@@ -68,11 +69,13 @@ public class TuringMachine {
         try {
             Transition transition = this.transitionTable.get(this.currentState.getName() + input);
 
+
             if (transition == null) {
                 handleTransitionNotFound(input);
                 checkCurrentState();
                 return true;
             } else {
+                //System.out.println(transition.toString());
                 performStateTransition(transition);
                 checkCurrentState();
                 return false;

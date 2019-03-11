@@ -12,8 +12,8 @@ public class FileParser {
     public FileParser(String filename, boolean readingTape) {
 
         try {
-            this.reader = new BufferedReader(new FileReader("tmfiles/" + filename));
-            //this.reader = new BufferedReader(new FileReader(filename));
+            //this.reader = new BufferedReader(new FileReader("tmfiles/" + filename));
+            this.reader = new BufferedReader(new FileReader(filename));
 
         } catch (FileNotFoundException ex) {
             //System.out.println(filename);
@@ -162,13 +162,13 @@ public class FileParser {
             ArrayList<Character> alphabet = getAlphabet(reader.readLine());
             tm.setAlphabet(alphabet);
 
-            String prevReadState = "";
-
             do {
                 line = reader.readLine();
 
                 if (line == null) break;
+
                 else if (line.equals("")) continue;
+                //System.out.println(line);
 
                 String[] tokens = line.split("\\s+");
                 if (tokens.length != 5) showInputError();
@@ -179,9 +179,6 @@ public class FileParser {
 
                 if (inputState == null || outputState == null) showInputError();
 
-                if(tokens[2].charAt(0) == 'r') {
-                    System.out.println("HEY");
-                }
 
 
                 Transition transition = new Transition(inputState, tokens[1].charAt(0),
@@ -201,17 +198,11 @@ public class FileParser {
                     showInputError();
                 }
 
-                if (transition.getOutputState().equals(tm.getAcceptState())) {
-                    System.out.println("HEY!");
-                }
-
                 if (transitionTable.containsKey(transition.getCurrentState().getName() + transition.getTapeInput())) {
                     showInputError();
                 } else {
                     transitionTable.put(transition.getCurrentState().getName() + transition.getTapeInput(), transition);
                 }
-
-                firstTime = false;
             } while (true);
         }
 
