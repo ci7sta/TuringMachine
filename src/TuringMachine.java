@@ -1,3 +1,4 @@
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -19,6 +20,8 @@ public class TuringMachine {
     private Tape tape;
     private State currentState;
     private State startState;
+    private Boolean EXPERIMENT_MODE = false;
+    private int TAPE_LENGTH = 0;
 
     public TuringMachine() {
 
@@ -34,13 +37,15 @@ public class TuringMachine {
      * - Invoke tape methods to move L or R according to transition table
      * - Accept or reject when one of these states reached (or reject when we have the special "virtual transition")
      */
-    public void run() {
+    public void run(boolean experimentModeToggled, int tapeLength) {
+
+        EXPERIMENT_MODE = experimentModeToggled;
+        TAPE_LENGTH = tapeLength;
 
         if (!validateTape()) {
             System.out.println("input error");
             System.exit(2);
         }
-
 
         do {
             Character input = this.tape.getCurrent();
@@ -51,7 +56,7 @@ public class TuringMachine {
             }
 
             if (!handleTransition(input)) transitions++;
-            checkCurrentState();
+            if (checkCurrentState()) break;
             //tape.printState();
         } while (true);
     }
@@ -85,28 +90,58 @@ public class TuringMachine {
             System.out.println("not accepted");
             System.out.println(this.transitions + " ");
             this.tape.printState();
-            System.exit(1);
+            if (EXPERIMENT_MODE) {
+                printData();
+            } else {
+                System.exit(1);
+            }
         }
 
         return false;
     }
 
-    private void checkCurrentState() {
+    private void printData() {
+        try {
+            FileWriter pw = new FileWriter("data.csv", true);
+            pw.append(TAPE_LENGTH + "");
+            pw.append(",");
+            pw.append(transitions + "");
+            pw.append("\n");
+
+            pw.flush();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private boolean checkCurrentState() {
 
         if (this.currentState.isAccept()) {
 
             System.out.println("accepted");
             System.out.println(this.transitions + " ");
             this.tape.printState();
-            System.exit(0);
+            if (EXPERIMENT_MODE) {
+                printData();
+                return true;
+            } else {
+                System.exit(0);
+            }
 
         } else if (this.currentState.isReject()) {
 
             System.out.println("not accepted");
             System.out.println(this.transitions + " ");
             this.tape.printState();
-            System.exit(1);
+            if (EXPERIMENT_MODE) {
+                printData();
+                return true;
+            } else {
+                System.exit(1);
+            }
         }
+
+        return false;
     }
 
     private void handleTransitionNotFound(Character input) {

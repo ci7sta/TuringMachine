@@ -12,8 +12,8 @@ public class FileParser {
     public FileParser(String filename, boolean readingTape) {
 
         try {
-            //this.reader = new BufferedReader(new FileReader("tmfiles/" + filename));
-            this.reader = new BufferedReader(new FileReader(filename));
+            this.reader = new BufferedReader(new FileReader("tmfiles/" + filename));
+            //this.reader = new BufferedReader(new FileReader(filename));
 
         } catch (FileNotFoundException ex) {
             //System.out.println(filename);

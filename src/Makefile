@@ -16,7 +16,8 @@ CLASSES = \
 	State.java \
 	Tape.java \
 	Transition.java \
-	TuringMachine.java
+	TuringMachine.java \
+	Experimenter.java
 
 MAIN = runtm
 
