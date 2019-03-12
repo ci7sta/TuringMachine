@@ -168,7 +168,7 @@ public class FileParser {
                 if (line == null) break;
 
                 else if (line.equals("")) continue;
-                //System.out.println(line);
+                System.out.println(line);
 
                 String[] tokens = line.split("\\s+");
                 if (tokens.length != 5) showInputError();

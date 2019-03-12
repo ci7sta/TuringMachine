@@ -57,7 +57,7 @@ public class TuringMachine {
 
             if (!handleTransition(input)) transitions++;
             if (checkCurrentState()) break;
-            //tape.printState();
+            tape.printState();
         } while (true);
     }
 
@@ -80,7 +80,7 @@ public class TuringMachine {
                 checkCurrentState();
                 return true;
             } else {
-                //System.out.println(transition.toString());
+                System.out.println(transition.toString());
                 performStateTransition(transition);
                 checkCurrentState();
                 return false;
