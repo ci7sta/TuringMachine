@@ -1,3 +1,8 @@
+/**
+ * Class to represent a state object.
+ *
+ * @author 160009591
+ */
 public class State {
 
     private String name;
@@ -10,6 +15,10 @@ public class State {
         this.accept = accept;
         this.reject = reject;
     }
+
+    /*
+     * Getters and setters
+     */
 
     public String getName() {
 

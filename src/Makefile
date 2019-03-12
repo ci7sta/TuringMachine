@@ -21,15 +21,8 @@ CLASSES = \
 
 MAIN = runtm
 
-default: classes
-
-
-classes: $(CLASSES:.java=.class)
+default: $(CLASSES:.java=.class)	
 	cp ../runtm ./
-
-
-run: $(MAIN).class
-	$(JVM) $(MAIN)
 
 clean:
 	$(RM) *.class

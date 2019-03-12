@@ -2,7 +2,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 /**
  * Class representing the Turing Machine itself. Once supplied with the necessary parameters, the run() method can be
  * invoked to process a tape based on a description and "accept" or "reject".
@@ -30,16 +29,11 @@ public class TuringMachine {
 
     /**
      * Run method of the turing machine.
-     * <p>
-     * Repeatedly:
-     * - Get an input character from the tape
-     * - Locate the transition associated with the current state and the input character
-     * - Perform the transition
-     * - Invoke tape methods to move L or R according to transition table
-     * - Accept or reject when one of these states reached (or reject when we have the special "virtual transition")
+     * Validate the tape, get the input character and call method to handle the transition.
      */
     public void run(boolean experimentModeToggled) {
 
+        // Set up experiment variables
         DATA_PRINTED = false;
         EXPERIMENT_MODE = experimentModeToggled;
         TAPE_LENGTH = tape.getTape().size();
@@ -49,27 +43,34 @@ public class TuringMachine {
             System.exit(2);
         }
 
+
+        // Main TM loop, get current char and handle the transition
         do {
             Character input = this.tape.getCurrent();
-
-            if (!this.alphabet.contains(input) && input != '_') {
-                System.out.println("error in tape file");
-                System.exit(3);
-            }
-
             if (!handleTransition(input)) transitions++;
-            //tape.printState();
         } while (!checkCurrentState() && !DATA_PRINTED);
     }
 
+
+    /**
+     * Pre-validate the tape to check all characters are in the alphabet.
+     *
+     * @return if the tape is valid or not
+     */
     private boolean validateTape() {
         for (Character c : this.tape.getTape()) {
             if (!this.alphabet.contains(c) && c != '_') return false;
         }
-
         return true;
     }
 
+    /**
+     * Handle the transition based on the input by locating it in the transition table and doing it, or acting
+     * appropriately if it's not found (by doing the "virtual" transition)
+     *
+     * @param input - the current read character
+     * @return true if we do the virtual transition, so we don't count it
+     */
     private boolean handleTransition(Character input) {
 
         try {
@@ -81,7 +82,6 @@ public class TuringMachine {
                 checkCurrentState();
                 return true;
             } else {
-                //System.out.println(transition.toString());
                 performStateTransition(transition);
                 checkCurrentState();
                 return false;
@@ -102,6 +102,9 @@ public class TuringMachine {
         return false;
     }
 
+    /**
+     * In experiment mode, print info to a csv file.
+     */
     private void printData() {
         try {
             if (!DATA_PRINTED) {
@@ -120,6 +123,11 @@ public class TuringMachine {
         }
     }
 
+    /**
+     * Check the current state we're in, and accept/reject if we need to.
+     *
+     * @return true if we write to the file to stop the program exiting
+     */
     private boolean checkCurrentState() {
 
         if (this.currentState.isAccept()) {
@@ -151,6 +159,11 @@ public class TuringMachine {
         return false;
     }
 
+    /**
+     * If we didn't get a transition, exit with error or do the virtual transition and reject.
+     *
+     * @param input - the input character
+     */
     private void handleTransitionNotFound(Character input) {
 
         if (!this.alphabet.contains(input) && input != '_') {
@@ -163,6 +176,11 @@ public class TuringMachine {
         }
     }
 
+    /**
+     * Perform a normal transition, and move L or R on the tape based on what the transition entry tells us to do.
+     *
+     * @param transition - the transition instruction to perform
+     */
     private void performStateTransition(Transition transition) {
 
         this.currentState = transition.getOutputState();
@@ -182,19 +200,9 @@ public class TuringMachine {
      * Getters and setters
      */
 
-    public int getTransitions() {
-
-        return transitions;
-    }
-
     public void setTransitions(int transitions) {
 
         this.transitions = transitions;
-    }
-
-    public int getNumberOfStates() {
-
-        return numberOfStates;
     }
 
     public void setNumberOfStates(int numberOfStates) {
@@ -202,19 +210,9 @@ public class TuringMachine {
         this.numberOfStates = numberOfStates;
     }
 
-    public State getAcceptState() {
-
-        return acceptState;
-    }
-
     public void setAcceptState(State acceptState) {
 
         this.acceptState = acceptState;
-    }
-
-    public State getRejectState() {
-
-        return rejectState;
     }
 
     public void setRejectState(State rejectState) {
@@ -230,10 +228,6 @@ public class TuringMachine {
     public void setStateTable(HashMap<String, State> stateTable) {
 
         this.stateTable = stateTable;
-    }
-
-    public HashMap<String, Transition> getTransitionTable() {
-        return transitionTable;
     }
 
     public void setTransitionTable(HashMap<String, Transition> transitionTable) {
@@ -258,11 +252,6 @@ public class TuringMachine {
     public void setTape(Tape tape) {
 
         this.tape = tape;
-    }
-
-    public State getCurrentState() {
-
-        return currentState;
     }
 
     public void setCurrentState(State currentState) {

@@ -31,17 +31,11 @@ public class Transition {
     }
 
     /*
-     * Getters and setters
+     * Getters
      */
-
     public State getCurrentState() {
 
         return currentState;
-    }
-
-    public void setCurrentState(State currentState) {
-
-        this.currentState = currentState;
     }
 
     public Character getTapeInput() {
@@ -49,38 +43,20 @@ public class Transition {
         return tapeInput;
     }
 
-    public void setTapeInput(Character tapeInput) {
-
-        this.tapeInput = tapeInput;
-    }
 
     public State getOutputState() {
 
         return outputState;
     }
 
-    public void setOutputState(State outputState) {
-
-        this.outputState = outputState;
-    }
 
     public Character getTapeOutput() {
 
         return tapeOutput;
     }
 
-    public void setTapeOutput(Character tapeOutput) {
-
-        this.tapeOutput = tapeOutput;
-    }
-
     public Character getMove() {
 
         return move;
-    }
-
-    public void setMove(Character move) {
-
-        this.move = move;
     }
 }

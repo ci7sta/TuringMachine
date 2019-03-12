@@ -78,7 +78,6 @@ public class Tape {
             sb.append(tapeCharacter);
         }
 
-
         // Strip trailing blanks
         String tapeOutput = sb.toString().replaceAll("_+$", "");
 
@@ -91,7 +90,6 @@ public class Tape {
     /*
      * Getters and setters
      */
-
     public ArrayList<Character> getTape() {
 
         return tape;
