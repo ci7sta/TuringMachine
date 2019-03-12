@@ -20,7 +20,8 @@ public class TuringMachine {
     private Tape tape;
     private State currentState;
     private State startState;
-    private Boolean EXPERIMENT_MODE = false;
+    private boolean EXPERIMENT_MODE;
+    private boolean DATA_PRINTED;
     private int TAPE_LENGTH = 0;
 
     public TuringMachine() {
@@ -37,10 +38,11 @@ public class TuringMachine {
      * - Invoke tape methods to move L or R according to transition table
      * - Accept or reject when one of these states reached (or reject when we have the special "virtual transition")
      */
-    public void run(boolean experimentModeToggled, int tapeLength) {
+    public void run(boolean experimentModeToggled) {
 
+        DATA_PRINTED = false;
         EXPERIMENT_MODE = experimentModeToggled;
-        TAPE_LENGTH = tapeLength;
+        TAPE_LENGTH = tape.getTape().size();
 
         if (!validateTape()) {
             System.out.println("input error");
@@ -56,9 +58,8 @@ public class TuringMachine {
             }
 
             if (!handleTransition(input)) transitions++;
-            if (checkCurrentState()) break;
-            tape.printState();
-        } while (true);
+            //tape.printState();
+        } while (!checkCurrentState() && !DATA_PRINTED);
     }
 
     private boolean validateTape() {
@@ -80,21 +81,22 @@ public class TuringMachine {
                 checkCurrentState();
                 return true;
             } else {
-                System.out.println(transition.toString());
+                //System.out.println(transition.toString());
                 performStateTransition(transition);
                 checkCurrentState();
                 return false;
             }
 
         } catch (NullPointerException ex) {
+            if (EXPERIMENT_MODE) {
+                printData();
+                return true;
+            }
+
             System.out.println("not accepted");
             System.out.println(this.transitions + " ");
             this.tape.printState();
-            if (EXPERIMENT_MODE) {
-                printData();
-            } else {
-                System.exit(1);
-            }
+            System.exit(1);
         }
 
         return false;
@@ -102,13 +104,17 @@ public class TuringMachine {
 
     private void printData() {
         try {
-            FileWriter pw = new FileWriter("data.csv", true);
-            pw.append(TAPE_LENGTH + "");
-            pw.append(",");
-            pw.append(transitions + "");
-            pw.append("\n");
+            if (!DATA_PRINTED) {
+                FileWriter pw = new FileWriter("data.csv", true);
+                pw.append(TAPE_LENGTH + "");
+                pw.append(",");
+                pw.append(transitions + "");
+                pw.append("\n");
 
-            pw.flush();
+                pw.flush();
+                DATA_PRINTED = true;
+                tape.printState();
+            }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -118,27 +124,28 @@ public class TuringMachine {
 
         if (this.currentState.isAccept()) {
 
-            System.out.println("accepted");
-            System.out.println(this.transitions + " ");
-            this.tape.printState();
             if (EXPERIMENT_MODE) {
                 printData();
                 return true;
-            } else {
-                System.exit(0);
             }
 
+            System.out.println("accepted");
+            System.out.println(this.transitions + " ");
+            this.tape.printState();
+            System.exit(0);
+
         } else if (this.currentState.isReject()) {
+
+            if (EXPERIMENT_MODE) {
+                printData();
+                return true;
+            }
 
             System.out.println("not accepted");
             System.out.println(this.transitions + " ");
             this.tape.printState();
-            if (EXPERIMENT_MODE) {
-                printData();
-                return true;
-            } else {
-                System.exit(1);
-            }
+            System.exit(1);
+
         }
 
         return false;

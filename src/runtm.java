@@ -17,7 +17,7 @@ public class runtm {
         Tape tape = tapeParser.initialiseTape();
         TuringMachine tm = turingDescParser.initialiseTuringMachine(tape);
 
-        tm.run(false, 0);
+        tm.run(false);
         System.out.println("finished");
     }
 }

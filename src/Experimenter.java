@@ -25,7 +25,7 @@ public class Experimenter {
                     tm.setTransitions(0);
                     tm.setTape(newTape);
                     tm.setCurrentState(tm.getStartState());
-                    tm.run(true, i);
+                    tm.run(true);
                 }
 
             } catch (Exception ex) {
@@ -37,36 +37,66 @@ public class Experimenter {
     private static Tape getTestTape(String testName, int inputLength) {
 
         Tape newTape = new Tape("");
+        newTape.getTape().clear();
 
         switch (testName) {
             case "paren":
-                newTape.getTape().clear();
+
                 newTape = new Tape("(");
-                for (int i = 0; i < (inputLength / 2); i++) {
+                for (int i = 0; i < inputLength; i++) {
                     newTape.getTape().add('(');
                 }
 
-                for (int i = 0; i < (inputLength / 2); i++) {
+                for (int i = 0; i < inputLength; i++) {
                     newTape.getTape().add(')');
                 }
-                newTape.setCurrent(newTape.getTape().get(0));
                 break;
 
             case "twoscomp":
-                newTape.getTape().clear();
-                for (int i = 0; i < (inputLength / 2); i++) {
+                for (int i = 0; i < inputLength; i++) {
                     newTape.getTape().add('1');
                 }
 
                 newTape.getTape().add('#');
 
-                for (int i = 0; i < (inputLength / 2); i++) {
+                for (int i = 0; i < inputLength; i++) {
                     newTape.getTape().add('0');
                 }
-                newTape.setCurrent(newTape.getTape().get(0));
                 break;
 
+            case "binadd":
+                for (int i = 0; i < inputLength; i++) {
+                    newTape.getTape().add('1');
+                }
+
+                newTape.getTape().add('#');
+
+                for (int i = 0; i < inputLength; i++) {
+                    newTape.getTape().add('0');
+                }
+
+                newTape.getTape().add('#');
+
+                for (int i = 0; i < inputLength; i++) {
+                    newTape.getTape().add('1');
+                }
+                break;
+
+            case "lessthan":
+                for (int i = 0; i < inputLength; i++) {
+                    newTape.getTape().add('1');
+                }
+
+                newTape.getTape().add('#');
+
+                for (int i = 0; i < inputLength; i++) {
+                    newTape.getTape().add('1');
+                }
+
+                break;
         }
+
+        newTape.setCurrent(newTape.getTape().get(0));
         return newTape;
     }
 }
